@@ -26,10 +26,42 @@ class View {
     -先行/後攻の切り替わりを描画する
     
     */ 
+
+    static config = {
+        initialPage : document.getElementById("initialPage"),
+    }
+
+
+   static createStartPage() {
+        let container = document.createElement("div");
+        container.classList.add("vh-100", "d-flex", "flex-column", "align-items-center", "justify-content-center", "text-center");
+        container.innerHTML = 
+        `
+        <h1>Tic-Tac-Toe</h1>
+        <div class="d-flex align-items-center justify-content-around col-8">
+            <div class="col-6">
+                <button id="vscpu" class="btn btn-primary btn-block">VS CPU</button>
+            </div>
+            <div class="col-6">
+                <button id="vsfriend" class="btn btn-primary btn-block">VS Friend</button> 
+            </div>
+        </div>
+
+        `;
+
+    return this.config.initialPage.append(container);
+   }
 }
 
 class Controller {
 
+    static selectGame() {
+        View.createStartPage();
+        let vsFriendBtn = View.config.initialPage.querySelectorAll("#vsfriend")[0].addEventListener("click", function() {
+            alert("click")
+            //Model.createTable(friend);
+        })
+    }
     /*
     必要な機能
 
@@ -44,3 +76,5 @@ class Controller {
 
     */
 }
+
+Controller.selectGame();
