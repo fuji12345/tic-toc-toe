@@ -11,6 +11,15 @@ class Table{
     -controllerからボード上のマスクリック通知が来たら、マスの状態を更新して、viewに描画させる
 
      */
+
+    static createBoard() {
+        let board = new Array(3);
+        for(let i=0; i<3; i++){
+            board[i] = new Array(3).fill(0);
+        }
+
+        return board;
+    }
 }
 
 class View {
@@ -29,6 +38,7 @@ class View {
 
     static config = {
         initialPage : document.getElementById("initialPage"),
+        mainPage: document.getElementById("mainPage"),
     }
 
 
@@ -51,6 +61,22 @@ class View {
 
     return this.config.initialPage.append(container);
    }
+
+   static createMainPage(board) {
+    let container = document.createElement("div");
+    container.classList.add("vh-100", "d-flex", "flex-column", "align-items-center", "justify-content-center");
+    container.innerHTML = 
+    `
+    <div id="turn">
+        <h2>ooのターン</h2>
+    </div>
+    <div id="displayBoard">
+    </div>
+    `;
+
+    return container;
+   }
+
 }
 
 class Controller {
@@ -58,9 +84,15 @@ class Controller {
     static selectGame() {
         View.createStartPage();
         let vsFriendBtn = View.config.initialPage.querySelectorAll("#vsfriend")[0].addEventListener("click", function() {
-            alert("click")
+            let initialBorad = Table.createBoard();
+            Controller.moveInitialToMain(initialBorad);
             //Model.createTable(friend);
         })
+    }
+
+    static moveInitialToMain(board) {
+        View.config.initialPage.classList.add("d-none");
+        View.config.mainPage.append(View.createMainPage(board));
     }
     /*
     必要な機能
