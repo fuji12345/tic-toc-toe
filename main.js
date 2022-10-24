@@ -1,6 +1,10 @@
 
 class Table{
     
+    constructor(board){
+        this.board = board;
+        this.turn = 1;
+    }
     /*
     プレイヤー数（二人対戦かcpuか？）を受け取る
     3×3のボードを作成し、viewに描画させる
@@ -11,6 +15,19 @@ class Table{
     -controllerからボード上のマスクリック通知が来たら、マスの状態を更新して、viewに描画させる
 
      */
+
+    
+}
+
+class Board{
+
+    static createBoard() {
+        let board = new Array(3);
+        for(let i=0; i<board.length; i++){
+            board[i] = new Array(3).fill(0);
+        }   
+        return board;
+    }
 }
 
 class View {
@@ -29,6 +46,7 @@ class View {
 
     static config = {
         initialPage : document.getElementById("initialPage"),
+        mainPage: document.getElementById("mainPage"),
     }
 
 
@@ -51,6 +69,50 @@ class View {
 
     return this.config.initialPage.append(container);
    }
+
+   static createMainPage(table) {
+    let container = document.createElement("div");
+    container.classList.add("vh-100", "d-flex", "flex-column", "align-items-center", "justify-content-center");
+    container.innerHTML = 
+    `
+    <div id="turn">
+        <h2>${table.turn}のターン</h2>
+    </div>
+    <div id="displayBoard">
+    </div>
+    `;
+
+    container.querySelectorAll("#displayBoard")[0].append(View.createInitialBoard(table.board));
+
+    return container;
+   }
+
+   static createInitialBoard(board) {
+    let container = document.createElement("div");
+    for(let i=0; i<board.length; i++){
+        let rowContainer = document.createElement("div");
+        rowContainer.classList.add("d-flex");
+        for(let j=0; j<board[0].length; j++){
+            let area = document.createElement("div");
+            area.classList.add("col-4", "border");
+            area.innerHTML = 
+            `
+            <div id="${""+i+j}">
+                <p>${board[i][j]}</p>
+            </div>
+            `;
+            area.addEventListener("click", function() {
+                //Controller.InputMark(board)→モデル内のボード情報の更新と更新後のView関数を実行させる
+                alert(area.innerHTML)
+            })
+            rowContainer.append(area);
+            
+        }
+        container.append(rowContainer);
+    }
+    return container;
+   }
+
 }
 
 class Controller {
@@ -58,9 +120,14 @@ class Controller {
     static selectGame() {
         View.createStartPage();
         let vsFriendBtn = View.config.initialPage.querySelectorAll("#vsfriend")[0].addEventListener("click", function() {
-            alert("click")
-            //Model.createTable(friend);
+            let table = new Table(Board.createBoard());
+            Controller.moveInitialToMain(table);
         })
+    }
+
+    static moveInitialToMain(table) {
+        View.config.initialPage.classList.add("d-none");
+        View.config.mainPage.append(View.createMainPage(table));
     }
     /*
     必要な機能
