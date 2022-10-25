@@ -187,11 +187,11 @@ class Controller {
     }
 
     static changeTurn(table) {
-        console.log(table);
         table.turn = Table.advanceTurn(table.turn);
         let player = Table.firstOrSecond(table.turn);
         View.changePlayer(player);
     }
+
     /*
     必要な機能
 
