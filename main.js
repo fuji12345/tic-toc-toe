@@ -57,6 +57,7 @@ class View {
     static config = {
         initialPage : document.getElementById("initialPage"),
         mainPage: document.getElementById("mainPage"),
+        resultPage: document.getElementById("resultPage")
     }
 
 
@@ -95,6 +96,29 @@ class View {
     container.querySelectorAll("#displayBoard")[0].append(View.createInitialBoard(table));
 
     return container;
+   }
+
+   static createResultPage(winner) {
+    let container = document.createElement("div");
+    container.classList.add("vh-100", "text-center", "d-flex", "flex-column", "justify-content-center");
+    container.innerHTML = 
+    `
+    <h1>Winner</h1>
+    <h1>${winner}</h1>
+    <div class="d-flex justify-content-center">
+        <div class="col-6">
+            <buttton id="restart" class="btn btn-primary btn-lg btn-block">
+                restart
+            </buttton>
+        </div>
+        <div class="col-6">
+            <buttton id="finish" class="btn btn-primary btn-lg btn-block">
+                finish
+            </buttton>
+        </div>
+    </div>
+    `;
+    return this.config.resultPage.append(container);
    }
 
    static createInitialBoard(table) {
@@ -149,7 +173,21 @@ class Controller {
         View.config.mainPage.append(View.createMainPage(table));
     }
 
+    static moveMainToFinish() {
+        View.config.mainPage.classList.add("d-none");
+        View.createResultPage();
+
+        let restart = View.config.resultPage.querySelectorAll("#restart")[0].addEventListener("click", function() {
+            View.config.resultPage.classList.add("d-none");
+            alert("ブラウザをリロードしてください");
+        })
+        let finish = View.config.resultPage.querySelectorAll("#finish")[0].addEventListener("click", function() {
+            View.config.resultPage.classList.add("d-none")
+        })
+    }
+
     static changeTurn(table) {
+        console.log(table);
         table.turn = Table.advanceTurn(table.turn);
         let player = Table.firstOrSecond(table.turn);
         View.changePlayer(player);
