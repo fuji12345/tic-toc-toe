@@ -11,8 +11,8 @@ class Table{
         else return "先攻"
     }
 
-    static advanceTurn(turn) {
-        return turn + 1;
+    advanceTurn() {
+        this.turn += 1;
     }
 
     /*
@@ -187,8 +187,9 @@ class Controller {
     }
 
     static changeTurn(table) {
-        table.turn = Table.advanceTurn(table.turn);
-        let player = Table.firstOrSecond(table.turn);
+        table.advanceTurn();
+        let nextTurn = table.turn;
+        let player = Table.firstOrSecond(nextTurn);
         View.changePlayer(player);
     }
 
