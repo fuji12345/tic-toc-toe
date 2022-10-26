@@ -5,6 +5,16 @@ class Table{
         this.board = board;
         this.turn = 1;
     }
+
+    static firstOrSecond(turn){
+        if(turn % 2 === 0) return "後攻"
+        else return "先攻"
+    }
+
+    advanceTurn() {
+        this.turn += 1;
+    }
+
     /*
     プレイヤー数（二人対戦かcpuか？）を受け取る
     3×3のボードを作成し、viewに描画させる
@@ -77,13 +87,13 @@ class View {
     container.innerHTML = 
     `
     <div id="turn">
-        <h2>${table.turn}のターン</h2>
+        <h2>先攻のターン</h2>
     </div>
     <div id="displayBoard">
     </div>
     `;
 
-    container.querySelectorAll("#displayBoard")[0].append(View.createInitialBoard(table.board));
+    container.querySelectorAll("#displayBoard")[0].append(View.createInitialBoard(table));
 
     return container;
    }
@@ -111,23 +121,23 @@ class View {
     return this.config.resultPage.append(container);
    }
 
-
-   static createInitialBoard(board) {
+   static createInitialBoard(table) {
     let container = document.createElement("div");
-    for(let i=0; i<board.length; i++){
+    for(let i=0; i<table.board.length; i++){
         let rowContainer = document.createElement("div");
         rowContainer.classList.add("d-flex");
-        for(let j=0; j<board[0].length; j++){
+        for(let j=0; j<table.board[0].length; j++){
             let area = document.createElement("div");
             area.classList.add("col-4", "border");
             area.innerHTML = 
             `
             <div id="${""+i+j}">
-                <p>${board[i][j]}</p>
+                <p>${table.board[i][j]}</p>
             </div>
             `;
             area.addEventListener("click", function() {
                 //Controller.InputMark(board)→モデル内のボード情報の更新と更新後のView関数を実行させる
+                Controller.changeTurn(table);
                 alert(area.innerHTML)
             })
             rowContainer.append(area);
@@ -138,9 +148,13 @@ class View {
     return container;
    }
 
-
-
-
+   static changePlayer(player) {
+    let turn = document.getElementById("turn");
+    turn.innerHTML =
+    `
+    <h2>${player}のターン</h2>
+    `;
+   }
 
 }
 
@@ -171,6 +185,14 @@ class Controller {
             View.config.resultPage.classList.add("d-none")
         })
     }
+
+    static changeTurn(table) {
+        table.advanceTurn();
+        let nextTurn = table.turn;
+        let player = Table.firstOrSecond(nextTurn);
+        View.changePlayer(player);
+    }
+
     /*
     必要な機能
 
