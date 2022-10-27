@@ -154,10 +154,10 @@ class View {
     let container = document.createElement("div");
     for(let i=0; i<table.board.length; i++){
         let rowContainer = document.createElement("div");
-        rowContainer.classList.add("d-flex");
+        rowContainer.classList.add("d-flex", "justify-content-center");
         for(let j=0; j<table.board[0].length; j++){
             let area = document.createElement("div");
-            area.classList.add("col-4", "border");
+            area.classList.add("col-12", "border", "text-center");
             area.innerHTML = 
             `
             <div id="${""+i+j}">
@@ -165,9 +165,32 @@ class View {
             </div>
             `;
             area.addEventListener("click", function() {
-                //Controller.InputMark(board)→モデル内のボード情報の更新と更新後のView関数を実行させる
-                Controller.changeTurn(table);
-                alert(area.innerHTML)
+                // 先攻、後攻の取得
+                let player = Table.firstOrSecond(table.turn);
+                // 先攻
+                if(player === "先攻" && table.board[i][j] == 0) {
+                    area.innerHTML =
+                    `
+                    <div id="${""+i+j}" class="bg-primary">
+                        <p>○</p>
+                    </div>
+                    `
+                    table.board[i][j] = 1;
+                    Controller.changeTurn(table);
+                }
+                // 後攻
+                if(player === "後攻" && table.board[i][j] == 0) {
+                    area.innerHTML =
+                    `
+                    <div id="${""+i+j}" class="bg-danger">
+                        <p>x</p>
+                    </div>
+                    `
+                    table.board[i][j] = -1;
+                    Controller.changeTurn(table);
+                }
+                // 勝敗判定の関数を実行
+                let result = Table.confirmWin();
             })
             rowContainer.append(area);
             
