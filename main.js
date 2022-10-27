@@ -28,27 +28,27 @@ class Table{
     confirmWin() {
 
         //空きマスのチェック
-        if(this.turn == 9) return false;
+        if(this.turn === 9) return false;
 
         //横のチェック
         for(let i=0; i<3; i++){
-            if (this.board[i][0] == this.board[i][1] && this.board[i][1] && this.board[i][2]){
+            if (this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
                 return false; 
             }
         }
 
         //縦のチェック
         for(let j=0; j<3; j++){
-            if (this.board[0][j] == this.board[1][j] && this.board[1][j] && this.board[2][j]){
+            if (this.board[0][j] === this.board[1][j] && this.board[1][j] === this.board[2][j]){
                 return false; 
             }
         }
 
         //斜めのチェック
-        if(this.board[1][1] != 0){
-            if(this.board[1][1] == this.board[0][0] && this.board[1][1] == this.board[2][2]){
+        if(this.board[1][1] !== 0){
+            if(this.board[1][1] === this.board[0][0] && this.board[1][1] === this.board[2][2]){
                 return false;
-            }else if(this.board[1][1] == this.board[0][2] && this.board[1][1] == this.board[2][0]){
+            }else if(this.board[1][1] === this.board[0][2] && this.board[1][1] === this.board[2][0]){
                 return false;
             }
         }
