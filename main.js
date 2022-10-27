@@ -162,6 +162,7 @@ class View {
             `;
             area.addEventListener("click", function() {
                 table.board[i][j] = table.turn % 2;
+                console.log(table.board[i]);
                 //Controller.InputMark(board)→モデル内のボード情報の更新と更新後のView関数を実行させる
                 //Controller.changeTurn(table);
                 Controller.startGame(table);
