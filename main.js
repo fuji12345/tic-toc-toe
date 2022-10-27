@@ -18,12 +18,10 @@ class Table{
     /*
     プレイヤー数（二人対戦かcpuか？）を受け取る
     3×3のボードを作成し、viewに描画させる
-
     管理内容
     -ボードの状態(どこに○×が書いてあるか)
     -今が先行か後攻か
     -controllerからボード上のマスクリック通知が来たら、マスの状態を更新して、viewに描画させる
-
      */
     confirmWin() {
 
@@ -32,14 +30,14 @@ class Table{
 
         //横のチェック
         for(let i=0; i<3; i++){
-            if (this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
+            if (this.board[i][0] !== 0 && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
                 return false; 
             }
         }
 
         //縦のチェック
         for(let j=0; j<3; j++){
-            if (this.board[0][j] === this.board[1][j] && this.board[1][j] === this.board[2][j]){
+            if (this.board[0][j] !== 0 && this.board[0][j] === this.board[1][j] && this.board[1][j] === this.board[2][j]){
                 return false; 
             }
         }
@@ -76,7 +74,6 @@ class View {
     -ゲームスタート画面（1人プレイか2人プレイを選択）
     -ボード画面（main）
     -結果画面
-
     必要な描画
     -選択したマスに○×を描画する
     -先行/後攻の切り替わりを描画する
@@ -104,7 +101,6 @@ class View {
                 <button id="vsfriend" class="btn btn-primary btn-block">VS Friend</button> 
             </div>
         </div>
-
         `;
 
     return this.config.initialPage.append(container);
@@ -165,9 +161,10 @@ class View {
             </div>
             `;
             area.addEventListener("click", function() {
+                table.board[i][j] = table.turn % 2;
                 //Controller.InputMark(board)→モデル内のボード情報の更新と更新後のView関数を実行させる
-                Controller.changeTurn(table);
-                alert(area.innerHTML)
+                //Controller.changeTurn(table);
+                Controller.startGame(table);
             })
             rowContainer.append(area);
             
@@ -222,18 +219,23 @@ class Controller {
         View.changePlayer(player);
     }
 
+    static startGame(table) {
+        let flag = table.confirmWin(table);
+        if (flag) {
+            Controller.changeTurn(table);
+        }else{
+            this.moveMainToFinish();
+        }
+    }
+
     /*
     必要な機能
-
     スタート画面
     -1人プレイが2人プレイかをmodelに送る
-
     main画面
     -ボード上のマスがクリックされた時にmodelに通知
-
     結果画面
     -もう1度遊ぶ？があれがmodelに通知
-
     */
 }
 
