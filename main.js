@@ -173,7 +173,6 @@ class View {
                         table.board[i][j] = 1;
                         Controller.startGame(table);
                     }
-                    // 後攻
                     if(player === "後攻") {
                         area.innerHTML =
                         `
@@ -225,10 +224,10 @@ class Controller {
 
         let restart = View.config.resultPage.querySelectorAll("#restart")[0].addEventListener("click", function() {
             View.config.resultPage.classList.add("d-none");
-            alert("ブラウザをリロードしてください");
+            location.reload();
         })
         let finish = View.config.resultPage.querySelectorAll("#finish")[0].addEventListener("click", function() {
-            View.config.resultPage.classList.add("d-none")
+            View.config.resultPage.classList.add("d-none");
         })
     }
 
