@@ -4,6 +4,7 @@ class Table{
     constructor(board){
         this.board = board;
         this.turn = 1;
+        this.isDraw = false;
     }
 
     static firstOrSecond(turn){
@@ -24,10 +25,6 @@ class Table{
     -controllerからボード上のマスクリック通知が来たら、マスの状態を更新して、viewに描画させる
      */
     confirmWin() {
-
-        //空きマスのチェック
-        if(this.turn === 9) return false;
-
         //横のチェック
         for(let i=0; i<3; i++){
             if (this.board[i][0] !== 0 && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
@@ -49,6 +46,12 @@ class Table{
             }else if(this.board[1][1] === this.board[0][2] && this.board[1][1] === this.board[2][0]){
                 return false;
             }
+        }
+
+        //空きマスのチェック、9マス目で勝敗が決まらなかった場合はtable.isDrawをtrueに変更する。→結果画面の表示のため
+        if(this.turn === 9){
+            this.isDraw = true;
+            return false;
         }
 
         return true;
@@ -128,8 +131,8 @@ class View {
     container.classList.add("vh-100", "text-center", "d-flex", "flex-column", "justify-content-center");
 
     let winner = "";
-    if(table.turn >= 9){
-        winner = "Drow";
+    if(table.isDraw){
+        winner = "Draw";
     }else{
         winner = "Winner: " + Table.firstOrSecond(table.turn);
     }
@@ -246,7 +249,7 @@ class Controller {
     }
 
     static startGame(table) {
-        let flag = table.confirmWin(table);
+        let flag = table.confirmWin();
         if (flag) {
             Controller.changeTurn(table);
         }else{
