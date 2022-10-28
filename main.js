@@ -18,12 +18,10 @@ class Table{
     /*
     プレイヤー数（二人対戦かcpuか？）を受け取る
     3×3のボードを作成し、viewに描画させる
-
     管理内容
     -ボードの状態(どこに○×が書いてあるか)
     -今が先行か後攻か
     -controllerからボード上のマスクリック通知が来たら、マスの状態を更新して、viewに描画させる
-
      */
     confirmWin() {
 
@@ -32,14 +30,14 @@ class Table{
 
         //横のチェック
         for(let i=0; i<3; i++){
-            if (this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
+            if (this.board[i][0] !== 0 && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
                 return false; 
             }
         }
 
         //縦のチェック
         for(let j=0; j<3; j++){
-            if (this.board[0][j] === this.board[1][j] && this.board[1][j] === this.board[2][j]){
+            if (this.board[0][j] !== 0 && this.board[0][j] === this.board[1][j] && this.board[1][j] === this.board[2][j]){
                 return false; 
             }
         }
@@ -76,7 +74,6 @@ class View {
     -ゲームスタート画面（1人プレイか2人プレイを選択）
     -ボード画面（main）
     -結果画面
-
     必要な描画
     -選択したマスに○×を描画する
     -先行/後攻の切り替わりを描画する
@@ -104,7 +101,6 @@ class View {
                 <button id="vsfriend" class="btn btn-primary btn-block">VS Friend</button> 
             </div>
         </div>
-
         `;
 
     return this.config.initialPage.append(container);
@@ -154,10 +150,10 @@ class View {
     let container = document.createElement("div");
     for(let i=0; i<table.board.length; i++){
         let rowContainer = document.createElement("div");
-        rowContainer.classList.add("d-flex");
+        rowContainer.classList.add("d-flex", "justify-content-center");
         for(let j=0; j<table.board[0].length; j++){
             let area = document.createElement("div");
-            area.classList.add("col-4", "border");
+            area.classList.add("col-12", "border", "text-center");
             area.innerHTML = 
             `
             <div id="${""+i+j}">
@@ -165,9 +161,39 @@ class View {
             </div>
             `;
             area.addEventListener("click", function() {
-                //Controller.InputMark(board)→モデル内のボード情報の更新と更新後のView関数を実行させる
-                Controller.changeTurn(table);
-                alert(area.innerHTML)
+
+                //table.board[i][j] = table.turn % 2;
+                //console.log(table.board[i]);
+                //Controller.startGame(table);
+
+                //yoppiさんのマスに〇✕を表示する部分(tableの情報とViewの更新) 
+                // 先攻、後攻の取得
+                let player = Table.firstOrSecond(table.turn);
+                // 先攻
+                if(player === "先攻" && table.board[i][j] == 0) {
+                    area.innerHTML =
+                    `
+                    <div id="${""+i+j}" class="bg-primary">
+                        <p>○</p>
+                    </div>
+                    `;
+                    table.board[i][j] = 1;
+                    //Controller.changeTurn(table); 
+                }
+                // 後攻
+                if(player === "後攻" && table.board[i][j] == 0) {
+                    area.innerHTML =
+                    `
+                    <div id="${""+i+j}" class="bg-danger">
+                        <p>x</p>
+                    </div>
+                    `;
+                    table.board[i][j] = -1;
+                    //Controller.changeTurn(table);
+                }
+                // 勝敗判定の関数を実行
+                //let result = table.confirmWin();
+                Controller.startGame(table);  //pimonさん作成した関数をここで呼び出し。 
             })
             rowContainer.append(area);
             
@@ -222,18 +248,23 @@ class Controller {
         View.changePlayer(player);
     }
 
+    static startGame(table) {
+        let flag = table.confirmWin(table);
+        if (flag) {
+            Controller.changeTurn(table);
+        }else{
+            this.moveMainToFinish();
+        }
+    }
+
     /*
     必要な機能
-
     スタート画面
     -1人プレイが2人プレイかをmodelに送る
-
     main画面
     -ボード上のマスがクリックされた時にmodelに通知
-
     結果画面
     -もう1度遊ぶ？があれがmodelに通知
-
     */
 }
 
