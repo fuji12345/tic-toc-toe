@@ -4,6 +4,7 @@ class Table{
     constructor(board){
         this.board = board;
         this.turn = 1;
+        this.isDraw = false;
     }
 
     static firstOrSecond(turn){
@@ -24,10 +25,6 @@ class Table{
     -controllerからボード上のマスクリック通知が来たら、マスの状態を更新して、viewに描画させる
      */
     confirmWin() {
-
-        //空きマスのチェック
-        if(this.turn === 9) return false;
-
         //横のチェック
         for(let i=0; i<3; i++){
             if (this.board[i][0] !== 0 && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]){
@@ -49,6 +46,12 @@ class Table{
             }else if(this.board[1][1] === this.board[0][2] && this.board[1][1] === this.board[2][0]){
                 return false;
             }
+        }
+
+        //空きマスのチェック、9マス目で勝敗が決まらなかった場合はtable.isDrawをtrueに変更する。→結果画面の表示のため
+        if(this.turn === 9){
+            this.isDraw = true;
+            return false;
         }
 
         return true;
@@ -123,12 +126,19 @@ class View {
     return container;
    }
 
-   static createResultPage(winner) {
+   static createResultPage(table) {
     let container = document.createElement("div");
     container.classList.add("vh-100", "text-center", "d-flex", "flex-column", "justify-content-center");
+
+    let winner = "";
+    if(table.isDraw){
+        winner = "Draw";
+    }else{
+        winner = "Winner: " + Table.firstOrSecond(table.turn);
+    }
+
     container.innerHTML = 
     `
-    <h1>Winner</h1>
     <h1>${winner}</h1>
     <div class="d-flex justify-content-center">
         <div class="col-6">
@@ -218,9 +228,9 @@ class Controller {
         View.config.mainPage.append(View.createMainPage(table));
     }
 
-    static moveMainToFinish() {
+    static moveMainToFinish(table) {
         View.config.mainPage.classList.add("d-none");
-        View.createResultPage();
+        View.createResultPage(table);
 
         let restart = View.config.resultPage.querySelectorAll("#restart")[0].addEventListener("click", function() {
             View.config.resultPage.classList.add("d-none");
@@ -239,11 +249,11 @@ class Controller {
     }
 
     static startGame(table) {
-        let flag = table.confirmWin(table);
+        let flag = table.confirmWin();
         if (flag) {
             Controller.changeTurn(table);
         }else{
-            this.moveMainToFinish();
+            this.moveMainToFinish(table);
         }
     }
 
