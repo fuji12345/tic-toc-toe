@@ -93,7 +93,7 @@ class View {
             </div>
         </div>
         `;
-    return this.config.initialPage.append(container);
+        return this.config.initialPage.append(container);
    }
    static createMainPage(table) {
     let container = document.createElement("div");
@@ -114,6 +114,16 @@ class View {
         </div>
     </div>  
     `;
+    let reset = container.querySelectorAll("#reset")[0].addEventListener("click", function() {
+        View.config.mainPage.classList.remove("d-none");
+        View.config.mainPage.innerHTML = "";
+        View.config.mainPage.append(View.createMainPage((new Table(Board.createBoard()))));
+    })
+
+    let home = container.querySelectorAll("#home")[0].addEventListener("click", function() {
+        View.config.mainPage.classList.add("d-none");
+        location.reload();
+    })
     container.querySelectorAll("#displayBoard")[0].append(View.createInitialBoard(table));
     return container;
    }
