@@ -3,7 +3,8 @@ Recursion beginner team development Program
 (https://recursionist.io)
 
 ## URL
-
+ https://blueteam-recursion.github.io/tic-tac-toe/
+ 
 ## Description
 Recursionのチーム開発で制作した三目並べです。  
 縦・横・斜めのどれか一列に自分のマークを揃えると勝利です。  
