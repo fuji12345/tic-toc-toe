@@ -1,4 +1,3 @@
-
 class Table{
     
     constructor(board){
@@ -6,16 +5,13 @@ class Table{
         this.turn = 1;
         this.isDraw = false;
     }
-
     static firstOrSecond(turn){
         if(turn % 2 === 0) return "後攻"
         else return "先攻"
     }
-
     advanceTurn() {
         this.turn += 1;
     }
-
     /*
     プレイヤー数（二人対戦かcpuか？）を受け取る
     3×3のボードを作成し、viewに描画させる
@@ -31,14 +27,12 @@ class Table{
                 return false; 
             }
         }
-
         //縦のチェック
         for(let j=0; j<3; j++){
             if (this.board[0][j] !== 0 && this.board[0][j] === this.board[1][j] && this.board[1][j] === this.board[2][j]){
                 return false; 
             }
         }
-
         //斜めのチェック
         if(this.board[1][1] !== 0){
             if(this.board[1][1] === this.board[0][0] && this.board[1][1] === this.board[2][2]){
@@ -47,20 +41,16 @@ class Table{
                 return false;
             }
         }
-
         //空きマスのチェック、9マス目で勝敗が決まらなかった場合はtable.isDrawをtrueに変更する。→結果画面の表示のため
         if(this.turn === 9){
             this.isDraw = true;
             return false;
         }
-
         return true;
     }
     
 }
-
 class Board{
-
     static createBoard() {
         let board = new Array(3);
         for(let i=0; i<board.length; i++){
@@ -69,9 +59,7 @@ class Board{
         return board;
     }
 }
-
 class View {
-
     /*
     必要な画面
     -ゲームスタート画面（1人プレイか2人プレイを選択）
@@ -82,14 +70,11 @@ class View {
     -先行/後攻の切り替わりを描画する
     
     */ 
-
     static config = {
         initialPage : document.getElementById("initialPage"),
         mainPage: document.getElementById("mainPage"),
         resultPage: document.getElementById("resultPage")
     }
-
-
    static createStartPage() {
         let container = document.createElement("div");
         container.classList.add("vh-100", "d-flex", "flex-column", "align-items-center", "justify-content-center", "text-center");
@@ -101,17 +86,15 @@ class View {
         <div class="d-flex align-items-center justify-content-around">
             <br><br><br>
             <div class="col-7">
-                <button id="vscpu" class="btn btn-danger btn-block">VS CPU</button>
+                <button id="vscpu" class="btn btn-danger btn-block btn-lg py-3">VS CPU</button>
             </div>
             <div class="col-7">
-                <button id="vsfriend" class="btn btn-primary btn-block">VS Friend</button> 
+                <button id="vsfriend" class="btn btn-primary btn-block btn-lg py-3">VS Friend</button> 
             </div>
         </div>
         `;
-
     return this.config.initialPage.append(container);
    }
-
    static createMainPage(table) {
     let container = document.createElement("div");
     container.classList.add("vh-100", "d-flex", "flex-column", "align-items-center", "justify-content-center");
@@ -122,44 +105,43 @@ class View {
     </div>
     <div id="displayBoard">
     </div>
+    <div class="d-flex align-items-center justify-content-around mt-4">
+        <div class="col-7">
+            <buttton id="home" class="btn btn-outline-primary btn-block btn-lg py-3">Home</buttton>
+        </div>
+        <div class="col-7">
+            <buttton id="reset" class="btn btn-outline-danger btn-block btn-lg py-3">Reset</buttton>
+        </div>
+    </div>  
     `;
-
     container.querySelectorAll("#displayBoard")[0].append(View.createInitialBoard(table));
-
     return container;
    }
-
    static createResultPage(table) {
     let container = document.createElement("div");
-    container.classList.add("vh-100", "text-center", "d-flex", "flex-column", "justify-content-center");
-
+    container.classList.add("vh-100", "d-flex", "align-items-center", "justify-content-center", "text-center");
     let winner = "";
     if(table.isDraw){
         winner = "Draw";
     }else{
         winner = "Winner: " + Table.firstOrSecond(table.turn);
     }
-
     container.innerHTML = 
     `
-    <h1>Winner</h1>
-    <h1>${winner}</h1>
-    <div class="d-flex justify-content-center">
-        <div class="col-6">
-            <buttton id="restart" class="btn btn-primary btn-lg btn-block">
-                restart
-            </buttton>
-        </div>
-        <div class="col-6">
-            <buttton id="finish" class="btn btn-primary btn-lg btn-block">
-                finish
-            </buttton>
+    <div class="col-5 d-flex flex-column align-items-center justify-content-center">
+        <h1>${winner}</h1>
+        <div class="d-flex align-items-center justify-content-around mt-4">
+            <div class="col-7">
+                <buttton id="restart" class="btn btn-primary btn-block py-5">ReSTART</buttton>
+            </div>
+            <div class="col-7">
+                <buttton id="finish" class="btn btn-secondary btn-block py-5">Finish</buttton>
+            </div>
         </div>
     </div>
     `;
     return this.config.resultPage.append(container);
    }
-
    static createInitialBoard(table) {
     let container = document.createElement("div");
     for(let i=0; i<table.board.length; i++){
@@ -206,7 +188,6 @@ class View {
     }
     return container;
    }
-
    static changePlayer(player) {
     let turn = document.getElementById("turn");
     turn.innerHTML =
@@ -214,11 +195,8 @@ class View {
     <h2>${player}のターン</h2>
     `;
    }
-
 }
-
 class Controller {
-
     static selectGame() {
         View.createStartPage();
         let vsFriendBtn = View.config.initialPage.querySelectorAll("#vsfriend")[0].addEventListener("click", function() {
@@ -226,22 +204,24 @@ class Controller {
             Controller.moveInitialToMain(table);
         })
     }
-
     static moveInitialToMain(table) {
         View.config.initialPage.classList.add("d-none");
         View.config.mainPage.append(View.createMainPage(table));
     }
-
     static moveMainToFinish(table) {
         View.config.mainPage.classList.add("d-none");
         View.createResultPage(table);
 
         let restart = View.config.resultPage.querySelectorAll("#restart")[0].addEventListener("click", function() {
-            View.config.resultPage.classList.add("d-none");
-            location.reload();
+            View.config.resultPage.innerHTML = "";
+            View.config.mainPage.classList.remove("d-none");
+            View.config.mainPage.innerHTML = "";
+            View.config.mainPage.append(View.createMainPage((new Table(Board.createBoard()))));
         })
+
         let finish = View.config.resultPage.querySelectorAll("#finish")[0].addEventListener("click", function() {
             View.config.resultPage.classList.add("d-none");
+            location.reload();
         })
     }
 
@@ -251,7 +231,6 @@ class Controller {
         let player = Table.firstOrSecond(nextTurn);
         View.changePlayer(player);
     }
-
     static startGame(table) {
         let flag = table.confirmWin();
         if (flag) {
@@ -260,7 +239,6 @@ class Controller {
             this.moveMainToFinish(table);
         }
     }
-
     /*
     必要な機能
     スタート画面
@@ -271,5 +249,4 @@ class Controller {
     -もう1度遊ぶ？があれがmodelに通知
     */
 }
-
 Controller.selectGame();
