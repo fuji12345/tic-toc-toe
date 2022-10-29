@@ -240,7 +240,6 @@ class Controller {
     static moveHome() {
         View.config.initialPage.classList.remove("d-none");
         View.config.mainPage.innerHTML = "";
-        View.createStartPage();
     }
 
     static reset() {
