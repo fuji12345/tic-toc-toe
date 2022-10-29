@@ -1,0 +1,15 @@
+.board-border{
+    border: 1px solid;
+    width: 30px;
+    height: 70px;
+}
+
+.circle{
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.cross{
+    font-size: 1.5rem;
+    font-weight: 900;
+}
